@@ -45,13 +45,13 @@ public class UserController {
     }
 
     @RequestMapping("signUp")
-    public Result sign(String username,String password,String realName,String area){
+    public Result sign(String username,String password){
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>().eq(User::getUsername, username);
         User user = userMapper.selectOne(wrapper);
         if(!Objects.isNull(user)) {
             return Result.fail("用户名已存在");
         }
-        User user1 = new User().setPassword(password).setArea(area).setRealName(realName).setUsername(username).setUserType("0");
+        User user1 = new User().setPassword(password).setUsername(username).setUserType("0");
         userMapper.insert(user1);
         return Result.ok();
     }
