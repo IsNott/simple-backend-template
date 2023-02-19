@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 
+ * 用户对象
  * </p>
  *
  * @author jobob
@@ -25,25 +25,13 @@ public class User implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    // 用户名
     private String username;
 
+    // 密码
     private String password;
 
+    // 用户类型 0-普通 1-管理员
     private String userType;
 
-    private String realName;
-
-    private String area;
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", userType='" + userType + '\'' +
-                ", realName='" + realName + '\'' +
-                ", area='" + area + '\'' +
-                '}';
-    }
 }

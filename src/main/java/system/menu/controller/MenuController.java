@@ -36,7 +36,7 @@ public class MenuController {
     @Resource
     private UserMapper userMapper;
 
-    // 根据用户id获取可浏览菜单
+    // 根据用户id获取当前用户可浏览菜单
     @RequestMapping("getMenu")
     public Result getMenu(long userId) {
         User user = userMapper.selectById(userId);
@@ -60,6 +60,7 @@ public class MenuController {
         return Result.okData(menus);
     }
 
+    // 添加菜单，userType 0-普通用户可见 1-管理员可见 all-全部用户可见
     @RequestMapping("addMenu")
     public Result addMenu(Menu menu, String userType) {
         if (StringUtils.isEmpty(userType)) {
@@ -82,6 +83,7 @@ public class MenuController {
         return Result.ok();
     }
 
+    // 删除菜单 多个以","分隔
     @RequestMapping("delMenuById")
     public Result delMenuById(String menuId) {
         if (menuId.contains(",")) {
@@ -97,6 +99,7 @@ public class MenuController {
         return Result.ok();
     }
 
+    // 更新菜单
     @RequestMapping("update")
     public Result update(Menu menu) {
         menuMapper.updateById(menu);
