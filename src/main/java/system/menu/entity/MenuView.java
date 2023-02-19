@@ -9,7 +9,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 
+ * 用户可见的菜单
  * </p>
  *
  * @author jobob
@@ -25,8 +25,10 @@ public class MenuView implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    // 用户类型 0-普通 1-管理员
     private String userType;
 
+    // 菜单id
     private Long menuId;
 
 
