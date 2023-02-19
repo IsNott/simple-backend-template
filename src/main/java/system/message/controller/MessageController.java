@@ -35,6 +35,7 @@ public class MessageController {
     @Resource
     private UserMapper userMapper;
 
+    // 留言
     @RequestMapping("addMsg")
     public Result addMsg(long userId,String context){
         Message message = new Message();
@@ -45,12 +46,14 @@ public class MessageController {
         return Result.ok();
     }
 
+    // 查询留言列表
     @RequestMapping("msgList")
     public Result msgList(){
         List<Message> allMsg = messageMapper.selectList(new QueryWrapper<Message>());
         return Result.okData(allMsg);
     }
 
+    // 根据id删除留言
     @RequestMapping("delMsgById")
     public Result delMsgById(String msgId){
         if(msgId.contains(",")){
@@ -64,6 +67,7 @@ public class MessageController {
         return Result.ok();
     }
 
+    // 回复留言
     @RequestMapping("respMsg")
     public Result respMsg(String respContext,long msgId){
         Message message = messageMapper.selectById(msgId);
@@ -76,6 +80,7 @@ public class MessageController {
         return Result.ok();
     }
 
+    // 查看留言详情
     @RequestMapping("viewMsgById")
     public Result viewMsgById(long msgId){
         Message message = messageMapper.selectById(msgId);

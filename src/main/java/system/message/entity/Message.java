@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 
+ * 留言对象
  * </p>
  *
  * @author jobob
@@ -27,14 +27,19 @@ public class Message implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    // 留言信息
     private String context;
 
+    // 回复信息
     private String respContext;
 
+    // 发送人id
     private Long senderId;
 
+    // 发送时间
     private LocalDateTime sendTime;
 
+    // 回复时间
     private LocalDateTime respTime;
 
 

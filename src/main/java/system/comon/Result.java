@@ -7,8 +7,11 @@ package system.comon;
 
 // 通用返回结果对象
 public class Result {
+    // 返回信息
     private String msg;
+    // 返回数据
     private Object data;
+    // 返回码 成功-200 失败-其他
     private String code;
 
     public String getCode() {
@@ -39,6 +42,7 @@ public class Result {
     public Result() {
     }
 
+    // 返回默认成功信息
     public static Result ok(){
         Result result = new Result();
         result.setMsg("成功");
@@ -46,6 +50,7 @@ public class Result {
         return result;
     }
 
+    // 返回带数据的结果
     public static Result okData(Object obj){
         Result result = new Result();
         result.setMsg("成功");
@@ -54,6 +59,7 @@ public class Result {
         return result;
     }
 
+    // 返回默认的失败信息
     public static Result fail(){
         Result result = new Result();
         result.setMsg("失败");
@@ -61,6 +67,7 @@ public class Result {
         return result;
     }
 
+    // 返回自定义的失败信息的结果
     public static Result fail(String msg){
         Result result = new Result();
         result.setMsg(msg);
