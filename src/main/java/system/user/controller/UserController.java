@@ -27,9 +27,11 @@ public class UserController {
     @Resource
     private UserMapper userMapper;
 
+    // 登录
     @RequestMapping("login")
     public Result login(String username, String password) {
-        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>().eq(User::getUsername, username).eq(User::getPassword, password);
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>()
+                .eq(User::getUsername, username).eq(User::getPassword, password);
         User user = userMapper.selectOne(wrapper);
         if (Objects.isNull(user)) {
             return Result.fail();
@@ -38,14 +40,17 @@ public class UserController {
         return Result.okData(user);
     }
 
+    // 登出
     @RequestMapping("logout")
     public Result logout(long id){
+        // 移除会话里的对象id
         SystemParam.getSession().removeAttribute(id+"");
         return Result.ok();
     }
 
+    // 注册
     @RequestMapping("signUp")
-    public Result sign(String username,String password,String realName,String area){
+    public Result sign(String username,String password){
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>().eq(User::getUsername, username);
         User user = userMapper.selectOne(wrapper);
         if(!Objects.isNull(user)) {
@@ -56,6 +61,7 @@ public class UserController {
         return Result.ok();
     }
 
+    // 更新user
     @RequestMapping("update")
     public Result update(User user) {
         if(Objects.isNull(user)){
@@ -65,6 +71,7 @@ public class UserController {
         return Result.ok();
     }
 
+    // 注册管理员
     @RequestMapping("signUpAdmin")
     public Result signUpAdmin(String username,String password){
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>().eq(User::getUsername, username);
@@ -77,6 +84,7 @@ public class UserController {
         return Result.ok();
     }
 
+    // 移除用户
     @RequestMapping("removeUserById")
     public Result removeUserById(long userId) {
         User selectOne = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getId, userId));
@@ -87,6 +95,7 @@ public class UserController {
         return Result.ok();
     }
 
+    // 查询账号信息
     @RequestMapping("selectById")
     public Result selectById(long userId){
         User user = userMapper.selectById(userId);
@@ -96,6 +105,7 @@ public class UserController {
         return Result.okData(user);
     }
 
+    // 查询账号列表
     @RequestMapping("userList")
     public Result uesrList(){
         List<User> users = userMapper.selectList(new LambdaQueryWrapper<User>());
