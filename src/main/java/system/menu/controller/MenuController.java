@@ -77,7 +77,9 @@ public class MenuController {
             MenuView menuView = new MenuView().setUserType(userType);
             menuViews.add(menuView);
         }
+
         for (MenuView menuView : menuViews) {
+            menuView.setMenuId(menu.getId());
             menuViewMapper.insert(menuView);
         }
         return Result.ok();
