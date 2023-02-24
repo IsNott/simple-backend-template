@@ -91,6 +91,15 @@ public class PetInfoController {
         return Result.ok();
     }
 
+    // 按领养状态查询宠物列表，不传查status全部宠物
+    @RequestMapping("pet")
+    public Result pet(String status){
+        LambdaQueryWrapper<PetInfo> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(StringUtils.isNotBlank(status),PetInfo::getAdoptFlag,status);
+        List<PetInfo> petInfos = petInfoMapper.selectList(wrapper);
+        return Result.okData(petInfos);
+    }
+
     // 根据账号id找到领养的宠物记录，不传用户id默认查全部宠物记录
     @RequestMapping("findMyPet")
     public Result findPet(long userId){
@@ -110,13 +119,8 @@ public class PetInfoController {
         if("0".equals(petInfo.getAdoptFlag()) || Objects.isNull(petInfo.getAdopterId())){
             return Result.fail("宠物未被领养或者记录不存在领养人id");
         }
-        petInfo.setAdoptFlag("0");
-        petInfo.setAdopterArea(null);
-        petInfo.setAdopterId(null);
-        petInfo.setAdopterName(null);
-        petInfo.setAdoptTime(null);
-        petInfo.setAdopterPhone(null);
-        petInfoMapper.updateById(petInfo);
+
+        petInfoMapper.setPet2UnAdopt(petInfo.getId());
         return Result.ok();
     }
 
@@ -137,7 +141,7 @@ public class PetInfoController {
         return Result.ok();
     }
 
-    // 更新宠物记录
+    // 按宠物记录id更新宠物记录，需要传完整PetInfo类的属性，不传则更新为null
     @RequestMapping("updateRecord")
     public Result updateRecord(PetInfo petInfo){
         PetInfo pet = petInfoMapper.selectById(petInfo.getId());
