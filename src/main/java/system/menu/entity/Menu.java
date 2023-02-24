@@ -31,5 +31,8 @@ public class Menu implements Serializable {
     // 菜单名称
     private String name;
 
+    // 路径
+    private String path;
+
 
 }
