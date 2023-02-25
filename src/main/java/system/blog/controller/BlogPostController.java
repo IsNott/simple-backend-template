@@ -130,7 +130,7 @@ public class BlogPostController {
         return Result.ok();
     }
 
-    // 更新评论
+    // 查看文章的评论列表
     @RequestMapping("commentList")
     public Result commentList(long postId){
         BlogPost blogPost = blogPostMapper.selectById(postId);
@@ -150,6 +150,30 @@ public class BlogPostController {
                 }).collect(Collectors.toList());
 
         return Result.okData(commntVOList);
+    }
+
+    // 删除文章
+    @RequestMapping("removePost")
+    public Result removePost(long postId){
+        BlogPost blogPost = blogPostMapper.selectById(postId);
+        if(Objects.isNull(blogPost)){
+            return Result.fail("文章不存在");
+        }
+        blogPostMapper.deleteById(postId);
+        return Result.ok();
+    }
+
+    // 计算博主的点赞数
+    @RequestMapping("countLike")
+    public Result countLike(long userId){
+        User user = userMapper.selectById(userId);
+        if(Objects.isNull(user) || !"2".equals(user.getUserType())){
+            return Result.fail("用户不存在或者不是博主");
+        }
+        LambdaQueryWrapper<BlogPost> queryWrapper = new LambdaQueryWrapper<BlogPost>().eq(BlogPost::getUserId, user.getId());
+        List<BlogPost> blogPosts = blogPostMapper.selectList(queryWrapper);
+        Long like = blogPosts.stream().mapToLong(BlogPost::getLikes).count();
+        return Result.okData(like);
     }
 
 }
