@@ -31,7 +31,10 @@ public class User implements Serializable {
     // 密码
     private String password;
 
-    // 用户类型 0-普通 1-管理员
+    // 昵称
+    private String nickName;
+
+    // 用户类型 0-游客 1-管理员 2-博主
     private String userType;
 
 }

@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  *
@@ -27,14 +29,34 @@ public class UserController {
     @Resource
     private UserMapper userMapper;
 
+    // 获取验证码
+    @RequestMapping("captcha")
+    public Result captcha(){
+        HttpSession session = SystemParam.getSession();
+        Object captcha = session.getAttribute("captcha");
+        if(captcha != null){
+            session.removeAttribute("captcha");
+        }
+        Random random = new Random();
+        int i = random.nextInt(6666);
+        session.setAttribute("captcha",i);
+        return Result.okData(i);
+    }
+
     // 登录
     @RequestMapping("login")
-    public Result login(String username, String password) {
+    public Result login(String username, String password,int captcha) {
+        if(Objects.isNull(captcha)){
+            return Result.fail("验证码不能为空");
+        }
+        if(captcha != (Integer)SystemParam.getSession().getAttribute("captcha")){
+            return Result.fail("验证码错误");
+        }
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>()
                 .eq(User::getUsername, username).eq(User::getPassword, password);
         User user = userMapper.selectOne(wrapper);
         if (Objects.isNull(user)) {
-            return Result.fail();
+            return Result.fail("账号或密码错误！");
         }
         user = SystemParam.storeLoginUser(user);
         return Result.okData(user);
