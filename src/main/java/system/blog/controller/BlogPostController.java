@@ -79,10 +79,12 @@ public class BlogPostController {
         return Result.ok();
     }
 
-    // 浏览全部文章
+    // 浏览全部/按博主id文章列表
     @RequestMapping("postList")
-    public Result postList(){
-        List<BlogPost> blogPosts = blogPostMapper.selectList(new LambdaQueryWrapper<BlogPost>());
+    public Result postList(long userId){
+        LambdaQueryWrapper<BlogPost> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(userId > 0, BlogPost::getUserId, userId);
+        List<BlogPost> blogPosts = blogPostMapper.selectList(wrapper);
         return Result.okData(blogPosts);
     }
 
@@ -152,6 +154,17 @@ public class BlogPostController {
         return Result.okData(commntVOList);
     }
 
+    // 删除评论
+    @RequestMapping("removeComment")
+    public Result removeComment(long commentId){
+        BlogComment blogComment = blogCommentMapper.selectById(commentId);
+        if(Objects.isNull(blogComment)){
+            return Result.fail("评论不存在");
+        }
+        blogCommentMapper.deleteById(blogComment);
+        return Result.ok();
+    }
+
     // 删除文章
     @RequestMapping("removePost")
     public Result removePost(long postId){
@@ -174,6 +187,18 @@ public class BlogPostController {
         List<BlogPost> blogPosts = blogPostMapper.selectList(queryWrapper);
         Long like = blogPosts.stream().mapToLong(BlogPost::getLikes).count();
         return Result.okData(like);
+    }
+
+    // 给文章上/取消推荐
+    @RequestMapping("recommend")
+    public Result recommend(long postId,String flag){
+        BlogPost blogPost = blogPostMapper.selectById(postId);
+        if(Objects.isNull(blogPost)){
+            return Result.fail("文章不存在");
+        }
+        blogPost.setRecommendFlag(flag);
+        blogPostMapper.updateById(blogPost);
+        return Result.ok();
     }
 
 }
