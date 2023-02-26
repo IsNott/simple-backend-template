@@ -55,6 +55,11 @@ public class BlogPost implements Serializable {
     private String title;
 
     /**
+     * 分类id
+     */
+    private Long typeId;
+
+    /**
      * 封面图片路径
      */
     private String coverPath;

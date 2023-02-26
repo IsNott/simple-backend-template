@@ -10,7 +10,7 @@ import system.blog.entity.BlogComment;
 import system.blog.entity.BlogPost;
 import system.blog.mapper.BlogCommentMapper;
 import system.blog.mapper.BlogPostMapper;
-import system.blog.vo.CommntVO;
+import system.blog.vo.CommentVO;
 import system.blog.vo.PosterInfoVO;
 import system.comon.Result;
 import system.user.entity.User;
@@ -18,10 +18,8 @@ import system.user.mapper.UserMapper;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +49,7 @@ public class BlogPostController {
             return Result.fail("发送信息不能为空");
         }
         BlogPost blogPost = new BlogPost();
+        blogPost.setTypeId(info.getTypeId());
         blogPost.setContext(info.getContext());
         blogPost.setCoverPath(info.getCoverPath());
         blogPost.setLikes(0L);
@@ -79,11 +78,12 @@ public class BlogPostController {
         return Result.ok();
     }
 
-    // 浏览全部/按博主id文章列表
+    // 浏览全部/按博主id/类型文章列表
     @RequestMapping("postList")
-    public Result postList(long userId){
+    public Result postList(long userId,long typeId){
         LambdaQueryWrapper<BlogPost> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(userId > 0, BlogPost::getUserId, userId);
+        wrapper.eq(userId > 0, BlogPost::getUserId, userId)
+                .eq(typeId > 0, BlogPost::getTypeId, typeId);
         List<BlogPost> blogPosts = blogPostMapper.selectList(wrapper);
         return Result.okData(blogPosts);
     }
@@ -141,17 +141,17 @@ public class BlogPostController {
         }
         LambdaQueryWrapper<BlogComment> wrapper = new LambdaQueryWrapper<BlogComment>().eq(BlogComment::getPostId, blogPost.getId());
         List<BlogComment> comments = blogCommentMapper.selectList(wrapper);
-        List<CommntVO> commntVOList = comments.stream()
+        List<CommentVO> commentVOList = comments.stream()
                 .filter(blogComment -> Objects.nonNull(blogComment.getCommenterId()))
                 .map(comment -> {
                     User user = userMapper.selectById(comment.getCommenterId());
-                    CommntVO vo = new CommntVO();
+                    CommentVO vo = new CommentVO();
                     BeanUtils.copyProperties(comment,vo);
                     vo.setSenderName(user.getNickName());
                     return vo;
                 }).collect(Collectors.toList());
 
-        return Result.okData(commntVOList);
+        return Result.okData(commentVOList);
     }
 
     // 删除评论
@@ -189,7 +189,7 @@ public class BlogPostController {
         return Result.okData(like);
     }
 
-    // 给文章上/取消推荐
+    // 文章上/取消推荐
     @RequestMapping("recommend")
     public Result recommend(long postId,String flag){
         BlogPost blogPost = blogPostMapper.selectById(postId);
