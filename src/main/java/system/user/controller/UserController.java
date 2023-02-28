@@ -1,6 +1,7 @@
 package system.user.controller;
 
 
+import org.apache.commons.lang3.StringUtils;
 import system.comon.Result;
 import system.comon.SystemParam;
 import system.user.entity.User;
@@ -72,13 +73,16 @@ public class UserController {
 
     // 注册
     @RequestMapping("signUp")
-    public Result sign(String username,String password){
+    public Result sign(String username,String password,String userType,String nickName){
+        if(StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils.isEmpty(userType) || StringUtils.isEmpty(nickName)){
+            return Result.fail("账号、密码、用户类型、昵称其中一项不能为空");
+        }
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>().eq(User::getUsername, username);
         User user = userMapper.selectOne(wrapper);
         if(!Objects.isNull(user)) {
             return Result.fail("用户名已存在");
         }
-        User user1 = new User().setPassword(password).setUsername(username).setUserType("0");
+        User user1 = new User().setPassword(password).setUsername(username).setUserType(userType).setNickName(nickName);
         userMapper.insert(user1);
         return Result.ok();
     }

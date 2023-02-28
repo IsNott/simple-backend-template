@@ -3,14 +3,19 @@ package system.blog.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.lang.Nullable;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 import system.blog.entity.BlogComment;
 import system.blog.entity.BlogPost;
+import system.blog.entity.BlogType;
 import system.blog.mapper.BlogCommentMapper;
 import system.blog.mapper.BlogPostMapper;
+import system.blog.mapper.BlogTypeMapper;
 import system.blog.vo.CommentVO;
+import system.blog.vo.PostVO;
 import system.blog.vo.PosterInfoVO;
 import system.comon.Result;
 import system.user.entity.User;
@@ -18,6 +23,7 @@ import system.user.mapper.UserMapper;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -40,6 +46,8 @@ public class BlogPostController {
     private BlogCommentMapper blogCommentMapper;
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private BlogTypeMapper blogTypeMapper;
 
 
     // 发送文章
@@ -47,6 +55,13 @@ public class BlogPostController {
     public Result postBlog(PosterInfoVO info){
         if(Objects.isNull(info)){
             return Result.fail("发送信息不能为空");
+        }
+        if(Objects.isNull(info.getId())){
+            return Result.fail("发送人id不能为空");
+        }
+        User user = userMapper.selectById(info.getId());
+        if(Objects.isNull(user) || !"2".equals(user.getUserType())){
+            return Result.fail("用户不存在或者不是博主");
         }
         BlogPost blogPost = new BlogPost();
         blogPost.setTypeId(info.getTypeId());
@@ -75,17 +90,30 @@ public class BlogPostController {
             Long likes = blogPost.getLikes();
             blogPost.setLikes(++likes);
         }
+        blogPostMapper.updateById(blogPost);
         return Result.ok();
     }
 
     // 浏览全部/按博主id/类型文章列表
     @RequestMapping("postList")
-    public Result postList(long userId,long typeId){
+    public Result postList(@Nullable Long userId,@Nullable Long typeId){
         LambdaQueryWrapper<BlogPost> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(userId > 0, BlogPost::getUserId, userId)
-                .eq(typeId > 0, BlogPost::getTypeId, typeId);
+        wrapper.eq(Objects.nonNull(userId) && userId > 0L, BlogPost::getUserId, userId)
+                .eq(Objects.nonNull(typeId) && typeId > 0L, BlogPost::getTypeId, typeId);
         List<BlogPost> blogPosts = blogPostMapper.selectList(wrapper);
-        return Result.okData(blogPosts);
+        List<PostVO> vos = null;
+        if(!CollectionUtils.isEmpty(blogPosts)){
+            vos = blogPosts.stream().map(post ->{
+                PostVO postVO = new PostVO();
+               if(Objects.nonNull(post.getUserId())){
+                   BeanUtils.copyProperties(post,postVO);
+                   User user = userMapper.selectById(post.getUserId());
+                   postVO.setNickName(user.getNickName());
+               }
+                return postVO;
+            }).collect(Collectors.toList());
+        }
+        return Result.okData(vos);
     }
 
     // 点击浏览文章
@@ -165,6 +193,40 @@ public class BlogPostController {
         return Result.ok();
     }
 
+    @RequestMapping("typeList")
+    public Result typeList(){
+        List<BlogType> blogTypes = blogTypeMapper.selectList(new LambdaQueryWrapper<BlogType>());
+        return Result.okData(blogTypes);
+    }
+
+    @RequestMapping("removeType")
+    public Result removeType(long typeId){
+        BlogType blogType = blogTypeMapper.selectById(typeId);
+        if(Objects.isNull(blogType)){
+            return Result.fail("类型不存在");
+        }
+        blogTypeMapper.deleteById(blogType);
+        return Result.ok();
+    }
+
+    @RequestMapping("uptType")
+    public Result uptType(String typeName,long typeId){
+        BlogType blogType = blogTypeMapper.selectById(typeId);
+        if(Objects.isNull(blogType)){
+            return Result.fail("类型不存在");
+        }
+        blogType.setTypeName(typeName);
+        blogTypeMapper.updateById(blogType);
+        return Result.ok();
+    }
+
+    @RequestMapping("addType")
+    public Result addType(String typeName){
+        BlogType blogType = new BlogType().setTypeName(typeName);
+        blogTypeMapper.insert(blogType);
+        return Result.ok();
+    }
+
     // 删除文章
     @RequestMapping("removePost")
     public Result removePost(long postId){
@@ -185,7 +247,7 @@ public class BlogPostController {
         }
         LambdaQueryWrapper<BlogPost> queryWrapper = new LambdaQueryWrapper<BlogPost>().eq(BlogPost::getUserId, user.getId());
         List<BlogPost> blogPosts = blogPostMapper.selectList(queryWrapper);
-        Long like = blogPosts.stream().mapToLong(BlogPost::getLikes).count();
+        Long like = blogPosts.stream().mapToLong(BlogPost::getLikes).sum();
         return Result.okData(like);
     }
 
