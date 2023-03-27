@@ -3,6 +3,8 @@ package system.act.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -12,6 +14,9 @@ import system.act.mapper.ActiveMapper;
 import system.comon.Result;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -32,12 +37,11 @@ public class ActiveController {
     private ActiveMapper activeMapper;
 
     // 创建活动
-    @PostMapping("create")
-    public Result create(Active active){
+    @RequestMapping("create")
+    public Result create(@ModelAttribute Active active){
         if(Objects.isNull(active)){
-            return Result.fail("活动不能为空");
+            return Result.fail("活动创建人不能为空");
         }
-        active.setAuditStatus("0");
         activeMapper.insert(active);
         return Result.ok();
     }
