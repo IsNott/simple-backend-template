@@ -1,6 +1,7 @@
 package system.user.controller;
 
 
+import org.springframework.format.annotation.DateTimeFormat;
 import system.comon.Result;
 import system.comon.SystemParam;
 import system.user.entity.User;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,17 +52,18 @@ public class UserController {
 
     // 注册
     @RequestMapping("signUp")
-    public Result sign(String username, String password, String gender, LocalDateTime birth, String phone) {
+    public Result sign(String username, String password, String gender, String birth, String phone) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>().eq(User::getUsername, username);
         User user = userMapper.selectOne(wrapper);
         if (!Objects.isNull(user)) {
             return Result.fail("用户名已存在");
         }
+
         User user1 = new User()
                 .setPassword(password)
                 .setUsername(username)
                 .setUserType("0")
-                .setBirth(birth)
+                .setBirth(LocalDate.parse(birth, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .setGender(gender)
                 .setPhone(phone);
         userMapper.insert(user1);
@@ -78,7 +82,7 @@ public class UserController {
 
     // 注册管理员
     @RequestMapping("signUpAdmin")
-    public Result signUpAdmin(String username, String password, String gender, LocalDateTime birth, String phone) {
+    public Result signUpAdmin(String username, String password, String gender, String birth, String phone) {
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>().eq(User::getUsername, username);
         User user = userMapper.selectOne(wrapper);
         if (!Objects.isNull(user)) {
@@ -88,7 +92,7 @@ public class UserController {
                 .setPassword(password)
                 .setUsername(username)
                 .setUserType("1").
-                setBirth(birth)
+                setBirth(LocalDate.parse(birth, DateTimeFormatter.ofPattern("yyyy-MM-dd")))
                 .setGender(gender)
                 .setPhone(phone);
         userMapper.insert(admin);

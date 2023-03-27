@@ -17,9 +17,11 @@ import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -38,7 +40,7 @@ public class ActiveController {
 
     // 创建活动
     @RequestMapping("create")
-    public Result create(@ModelAttribute Active active){
+    public Result create(Active active){
         if(Objects.isNull(active)){
             return Result.fail("活动创建人不能为空");
         }
@@ -89,9 +91,13 @@ public class ActiveController {
         }
         if(id.contains(",")){
             List<String> ids = Arrays.asList(id.split(","));
-            activeMapper.deleteBatchIds(ids);
+            ArrayList<Long> longs = new ArrayList<>();
+            for (String s : ids) {
+                longs.add(Long.parseLong(s));
+            }
+            activeMapper.deleteBatchIds(longs);
         }else {
-            activeMapper.deleteById(id);
+            activeMapper.deleteById(Long.parseLong(id));
         }
         return Result.ok();
     }

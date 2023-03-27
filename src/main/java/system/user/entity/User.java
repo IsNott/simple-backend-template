@@ -3,6 +3,7 @@ package system.user.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.Data;
@@ -34,7 +35,7 @@ public class User implements Serializable {
     private String gender;
 
     // 生日
-    private LocalDateTime birth;
+    private LocalDate birth;
 
     // 手机号
     private String phone;
