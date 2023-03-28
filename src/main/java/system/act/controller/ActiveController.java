@@ -38,6 +38,7 @@ public class ActiveController {
         if(Objects.isNull(active)){
             return Result.fail("活动创建人不能为空");
         }
+        active.setAuditStatus("0");
         activeMapper.insert(active);
         return Result.ok();
     }

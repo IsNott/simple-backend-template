@@ -2,7 +2,7 @@ package system.comon;
 
 /**
  * 自定义的异常
- * @author Nott
+ * @author
  * @Date 2023/2/17
  */
 
