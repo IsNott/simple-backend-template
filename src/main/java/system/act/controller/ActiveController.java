@@ -3,8 +3,6 @@ package system.act.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -14,14 +12,10 @@ import system.act.mapper.ActiveMapper;
 import system.comon.Result;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -76,11 +70,15 @@ public class ActiveController {
     }
 
     @PostMapping("list")
-    public Result list(String id,String name){
-        LambdaQueryWrapper<Active> wrapper = new LambdaQueryWrapper<Active>()
-                .eq(StringUtils.isNotBlank(id), Active::getId, Long.parseLong(id))
-                .eq(StringUtils.isNotBlank(name), Active::getActName, name);
+    public Result list(){
+        LambdaQueryWrapper<Active> wrapper = new LambdaQueryWrapper<Active>();
         List<Active> actives = activeMapper.selectList(wrapper);
+        return Result.okData(actives);
+    }
+
+    @PostMapping("getById")
+    public Result getById(String id){
+        Active actives = activeMapper.selectById(Long.parseLong(id));
         return Result.okData(actives);
     }
 
