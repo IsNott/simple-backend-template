@@ -11,7 +11,7 @@
  Target Server Version : 80016
  File Encoding         : 65001
 
- Date: 27/03/2023 22:16:53
+ Date: 28/03/2023 08:54:22
 */
 
 SET NAMES utf8mb4;
@@ -45,6 +45,7 @@ DROP TABLE IF EXISTS `donate`;
 CREATE TABLE `donate`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
   `doneter_id` bigint(20) NULL DEFAULT NULL COMMENT '捐赠人',
+  `donater_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '捐赠人署名',
   `donate_time` datetime(0) NULL DEFAULT NULL COMMENT '捐赠时间',
   `donate_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '捐赠类型',
   `donate_destination` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '捐赠地址',
@@ -58,6 +59,9 @@ CREATE TABLE `donate`  (
 -- ----------------------------
 -- Records of donate
 -- ----------------------------
+INSERT INTO `donate` VALUES (2, 1, '小孩', '2023-03-28 08:46:59', '扶贫捐赠1', '广州市海珠区', '1234125', '广州市白云区', '123325', '物资');
+INSERT INTO `donate` VALUES (3, 1, '小孩', '2023-03-28 08:47:02', '扶贫捐赠12', '广州市海珠区', '1234125', '广州市白云区', '123325', '物资');
+INSERT INTO `donate` VALUES (4, 1, '小孩', '2023-03-28 08:47:04', '扶贫捐赠124', '广州市海珠区', '1234125', '广州市白云区', '123325', '物资');
 
 -- ----------------------------
 -- Table structure for menu
@@ -163,6 +167,7 @@ INSERT INTO `user` VALUES (1, 'root', '12345', '1', NULL, NULL, NULL);
 INSERT INTO `user` VALUES (2, 'test', '123456', '0', NULL, NULL, NULL);
 INSERT INTO `user` VALUES (4, 'testAdmin', '123456', '1', NULL, NULL, NULL);
 INSERT INTO `user` VALUES (5, 'test1', '123', '0', '1', '2023-04-05', '123455678');
+INSERT INTO `user` VALUES (6, 'admin1', '123', '1', '1', '2023-04-05', '123455678');
 
 -- ----------------------------
 -- Table structure for user_type

@@ -52,6 +52,11 @@ public class Donate implements Serializable {
     private String donateDestination;
 
     /**
+     * 捐赠人署名
+     */
+    private String donaterName;
+
+    /**
      * 捐赠人联系电话
      */
     private String donaterPhone;

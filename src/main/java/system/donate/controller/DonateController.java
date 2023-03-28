@@ -12,6 +12,7 @@ import system.donate.entity.Donate;
 import system.donate.mapper.DonateMapper;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +37,7 @@ public class DonateController {
         if(Objects.isNull(donate)){
          return Result.fail("捐赠不能为空");
         }
+        donate.setDonateTime(LocalDateTime.now());
         donateMapper.insert(donate);
         return Result.ok();
     }
