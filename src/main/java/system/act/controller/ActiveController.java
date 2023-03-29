@@ -35,7 +35,7 @@ public class ActiveController {
     // 创建活动
     @RequestMapping("create")
     public Result create(Active active){
-        if(Objects.isNull(active)){
+        if(Objects.isNull(active) || active.getActCreater() == null){
             return Result.fail("活动创建人不能为空");
         }
         active.setAuditStatus("0");
@@ -43,7 +43,7 @@ public class ActiveController {
         return Result.ok();
     }
 
-    @PostMapping("updateById")
+    @RequestMapping("updateById")
     public Result updateById(Active active){
         if(Objects.isNull(active)){
             return Result.fail("活动不能为空");
@@ -56,7 +56,7 @@ public class ActiveController {
         return Result.ok();
     }
 
-    @PostMapping("auditAct")
+    @RequestMapping("auditAct")
     public Result auditAct(String activeId){
         if(StringUtils.isEmpty(activeId)){
             return Result.fail("活动id不能为空");
@@ -70,20 +70,20 @@ public class ActiveController {
         return Result.ok();
     }
 
-    @PostMapping("list")
+    @RequestMapping("list")
     public Result list(){
         LambdaQueryWrapper<Active> wrapper = new LambdaQueryWrapper<Active>();
         List<Active> actives = activeMapper.selectList(wrapper);
         return Result.okData(actives);
     }
 
-    @PostMapping("getById")
+    @RequestMapping("getById")
     public Result getById(String id){
         Active actives = activeMapper.selectById(Long.parseLong(id));
         return Result.okData(actives);
     }
 
-    @PostMapping("delById")
+    @RequestMapping("delById")
     public Result delById(String id){
         if(StringUtils.isEmpty(id)){
             return Result.fail("活动id不能为空");
