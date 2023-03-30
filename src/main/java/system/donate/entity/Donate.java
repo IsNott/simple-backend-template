@@ -76,5 +76,9 @@ public class Donate implements Serializable {
      */
     private String receiverName;
 
+    /**
+     * 审核状态
+     */
+    private String auditStatus;
 
 }

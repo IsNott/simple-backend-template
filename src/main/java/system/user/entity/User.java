@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * <p>
@@ -35,6 +36,7 @@ public class User implements Serializable {
     private String gender;
 
     // 生日
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birth;
 
     // 手机号

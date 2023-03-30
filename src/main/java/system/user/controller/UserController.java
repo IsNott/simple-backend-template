@@ -101,12 +101,12 @@ public class UserController {
 
     // 移除用户
     @RequestMapping("removeUserById")
-    public Result removeUserById(long userId) {
-        User selectOne = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getId, userId));
+    public Result removeUserById(long id) {
+        User selectOne = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getId, id));
         if (Objects.isNull(selectOne)) {
             return Result.fail("要移除的账户不存在");
         }
-        userMapper.deleteById(userId);
+        userMapper.deleteById(id);
         return Result.ok();
     }
 

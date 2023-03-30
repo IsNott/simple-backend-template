@@ -7,6 +7,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
+import system.act.entity.Active;
 import system.comon.Result;
 import system.donate.entity.Donate;
 import system.donate.mapper.DonateMapper;
@@ -38,7 +39,22 @@ public class DonateController {
          return Result.fail("捐赠不能为空");
         }
         donate.setDonateTime(LocalDateTime.now());
+        donate.setAuditStatus("0");
         donateMapper.insert(donate);
+        return Result.ok();
+    }
+
+    @RequestMapping("audit")
+    public Result auditAct(String id){
+        if(StringUtils.isEmpty(id)){
+            return Result.fail("捐赠id不能为空");
+        }
+        Donate donate = donateMapper.selectById(Long.parseLong(id));
+        if(donate == null){
+            return Result.fail("没有找到活动");
+        }
+        donate.setAuditStatus("1");
+        donateMapper.updateById(donate);
         return Result.ok();
     }
 
@@ -58,6 +74,15 @@ public class DonateController {
         }
         donateMapper.updateById(donate);
         return Result.ok();
+    }
+
+    @RequestMapping("getById")
+    public Result update(String donateId){
+        if(StringUtils.isEmpty(donateId)){
+            return Result.fail("捐赠id不能为空");
+        }
+        Donate donate = donateMapper.selectById(Long.parseLong(donateId));
+        return Result.okData(donate);
     }
 
     @RequestMapping("delById")
