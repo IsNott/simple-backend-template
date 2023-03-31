@@ -18,7 +18,7 @@ import java.util.Scanner;
 
 /**
  * mybatis-plus代码生成器，只用修改标注1和2的地方，点击运行新增模块，按提示在控制台输入字符
- * @author Nott
+ * @author
  * @Date 2023/2/16
  */
 
