@@ -60,7 +60,7 @@ public class BlogPost implements Serializable {
     private Long typeId;
 
     /**
-     * 封面图片路径
+     * 封面图片
      */
     private String coverPath;
 

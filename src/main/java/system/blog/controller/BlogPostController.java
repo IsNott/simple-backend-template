@@ -1,13 +1,17 @@
 package system.blog.controller;
 
 
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.io.FileUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import system.blog.entity.BlogComment;
 import system.blog.entity.BlogPost;
 import system.blog.entity.BlogType;
@@ -17,6 +21,7 @@ import system.blog.mapper.BlogTypeMapper;
 import system.blog.vo.CommentVO;
 import system.blog.vo.PostVO;
 import system.blog.vo.PosterInfoVO;
+import system.comon.FileUtils;
 import system.comon.Result;
 import system.user.entity.User;
 import system.user.mapper.UserMapper;
@@ -75,6 +80,21 @@ public class BlogPostController {
         blogPost.setPostView(0L);
         blogPostMapper.insert(blogPost);
         return Result.ok();
+    }
+
+    @RequestMapping("uploadImg")
+    public Result upload(MultipartFile file){
+        String upload = FileUtils.upload(file);
+        return Result.okData(upload);
+    }
+
+    @RequestMapping("getImg/{name}")
+    public Result img(@PathVariable String name){
+        // 读取图片文件内容
+        byte[] imageBytes = FileUtil.readBytes(System.getProperty("user.dir") + "\\src\\main\\resources\\static\\"+ name);
+//        // 将图片内容转换成base64字符串
+        String base64String = Base64.encode(imageBytes);
+        return Result.okData(base64String);
     }
 
     // 点赞文章

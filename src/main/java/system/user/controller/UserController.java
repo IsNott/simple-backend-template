@@ -51,13 +51,6 @@ public class UserController {
             return Result.fail("验证码不能为空");
         }
 
-        String captcha1 = (String)SystemParam.getSession().getAttribute("captcha");
-        if(Objects.isNull(captcha1)){
-            return Result.fail("没有获取验证码");
-        }
-        if(!captcha.equals(captcha1)){
-            return Result.fail("验证码错误");
-        }
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>()
                 .eq(User::getUsername, username).eq(User::getPassword, password);
         User user = userMapper.selectOne(wrapper);
