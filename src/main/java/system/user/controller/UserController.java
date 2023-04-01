@@ -40,17 +40,22 @@ public class UserController {
         }
         Random random = new Random();
         int i = random.nextInt(6666);
-        session.setAttribute("captcha",i);
-        return Result.okData(i);
+        session.setAttribute("captcha",String.valueOf(i));
+        return Result.okData(String.valueOf(i));
     }
 
     // 登录
     @RequestMapping("login")
-    public Result login(String username, String password,int captcha) {
+    public Result login(String username, String password,String captcha) {
         if(Objects.isNull(captcha)){
             return Result.fail("验证码不能为空");
         }
-        if(captcha != (Integer)SystemParam.getSession().getAttribute("captcha")){
+
+        String captcha1 = (String)SystemParam.getSession().getAttribute("captcha");
+        if(Objects.isNull(captcha1)){
+            return Result.fail("没有获取验证码");
+        }
+        if(!captcha.equals(captcha1)){
             return Result.fail("验证码错误");
         }
         LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<User>()

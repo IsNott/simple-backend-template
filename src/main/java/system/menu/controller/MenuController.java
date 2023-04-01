@@ -71,8 +71,10 @@ public class MenuController {
         if ("all".equals(userType)) {
             MenuView menuView = new MenuView().setUserType("0");
             MenuView menuView1 = new MenuView().setUserType("1");
+            MenuView menuView2 = new MenuView().setUserType("2");
             menuViews.add(menuView);
             menuViews.add(menuView1);
+            menuViews.add(menuView2);
         } else {
             MenuView menuView = new MenuView().setUserType(userType);
             menuViews.add(menuView);

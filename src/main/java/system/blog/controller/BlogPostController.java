@@ -129,7 +129,7 @@ public class BlogPostController {
             Long view = blogPost.getPostView();
             blogPost.setPostView(++view);
         }
-        return Result.ok();
+        return Result.okData(blogPost);
     }
 
     // 添加文章评论
@@ -180,6 +180,28 @@ public class BlogPostController {
                 }).collect(Collectors.toList());
 
         return Result.okData(commentVOList);
+    }
+
+    @RequestMapping("selectCommetListByUserId")
+    public Result selectCommetListByUserId(long id){
+        User user = userMapper.selectById(id);
+        if(Objects.isNull(user)){
+            return Result.fail("找不到用户");
+        }
+        ArrayList<CommentVO> vos = new ArrayList<>();
+        LambdaQueryWrapper<BlogComment> wrapper = new LambdaQueryWrapper<BlogComment>().eq(BlogComment::getCommenterId, id);
+        List<BlogComment> commentList = blogCommentMapper.selectList(wrapper);
+        List<CommentVO> commentVOList = commentList.stream()
+                .filter(blogComment -> Objects.nonNull(blogComment.getCommenterId()))
+                .map(comment -> {
+                    CommentVO vo = new CommentVO();
+                    BeanUtils.copyProperties(comment,vo);
+                    vo.setSenderName(user.getNickName());
+                    return vo;
+                }).collect(Collectors.toList());
+
+        return Result.okData(commentVOList);
+
     }
 
     // 删除评论
