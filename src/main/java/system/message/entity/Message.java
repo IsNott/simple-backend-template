@@ -42,5 +42,8 @@ public class Message implements Serializable {
     // 回复时间
     private LocalDateTime respTime;
 
+    // 审核状态
+    private String auditStatus;
+
 
 }

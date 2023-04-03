@@ -74,7 +74,7 @@ public class Active implements Serializable {
     private String actType;
 
     /**
-     * 接收地址
+     * 捐赠地址
      */
     private String receiveDestination;
 

@@ -41,8 +41,21 @@ public class MessageController {
         Message message = new Message();
         message.setSenderId(userId);
         message.setContext(context);
+        message.setAuditStatus("0");
         message.setSendTime(LocalDateTime.now());
         messageMapper.insert(message);
+        return Result.ok();
+    }
+
+    // 审核留言
+    @RequestMapping("audit")
+    public Result addMsg(long id){
+        Message message = messageMapper.selectById(id);
+        if(message == null){
+            return Result.fail("留言不存在");
+        }
+        message.setAuditStatus("1");
+        messageMapper.updateById(message);
         return Result.ok();
     }
 
