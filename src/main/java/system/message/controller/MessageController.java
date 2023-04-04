@@ -75,7 +75,7 @@ public class MessageController {
                 messageMapper.deleteById(Long.parseLong(id));
             }
         }else {
-            messageMapper.deleteById(msgId);
+            messageMapper.deleteById(Long.parseLong(msgId));
         }
         return Result.ok();
     }
