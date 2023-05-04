@@ -61,8 +61,10 @@ public class MessageController {
 
     // 查询留言列表
     @RequestMapping("msgList")
-    public Result msgList(){
-        List<Message> allMsg = messageMapper.selectList(new QueryWrapper<Message>());
+    public Result msgList(String status){
+        QueryWrapper<Message> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Message::getAuditStatus,status);
+        List<Message> allMsg = messageMapper.selectList(wrapper);
         return Result.okData(allMsg);
     }
 

@@ -20,7 +20,7 @@ import java.util.Objects;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author jobob
@@ -34,9 +34,9 @@ public class DonateController {
     private DonateMapper donateMapper;
 
     @RequestMapping("create")
-    public Result create(Donate donate){
-        if(Objects.isNull(donate)){
-         return Result.fail("捐赠不能为空");
+    public Result create(Donate donate) {
+        if (Objects.isNull(donate)) {
+            return Result.fail("捐赠不能为空");
         }
         donate.setDonateTime(LocalDateTime.now());
         donate.setAuditStatus("0");
@@ -45,12 +45,12 @@ public class DonateController {
     }
 
     @RequestMapping("audit")
-    public Result auditAct(String id){
-        if(StringUtils.isEmpty(id)){
+    public Result auditAct(String id) {
+        if (StringUtils.isEmpty(id)) {
             return Result.fail("捐赠id不能为空");
         }
         Donate donate = donateMapper.selectById(Long.parseLong(id));
-        if(donate == null){
+        if (donate == null) {
             return Result.fail("没有找到活动");
         }
         donate.setAuditStatus("1");
@@ -59,17 +59,18 @@ public class DonateController {
     }
 
     @RequestMapping("list")
-    public Result list(String id,String donaterId){
+    public Result list(String id, String donaterId,String status) {
         LambdaQueryWrapper<Donate> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(StringUtils.isNotBlank(id),Donate::getId,id)
-                .eq(StringUtils.isNotBlank(donaterId),Donate::getDoneterId,donaterId);
+        wrapper.eq(StringUtils.isNotBlank(id), Donate::getId, id)
+                .eq(Donate::getAuditStatus, status)
+                .eq(StringUtils.isNotBlank(donaterId), Donate::getDoneterId, donaterId);
         List<Donate> donates = donateMapper.selectList(wrapper);
         return Result.okData(donates);
     }
 
     @RequestMapping("update")
-    public Result update(Donate donate){
-        if(Objects.isNull(donate)){
+    public Result update(Donate donate) {
+        if (Objects.isNull(donate)) {
             return Result.fail("更新对象不能为空");
         }
         donateMapper.updateById(donate);
@@ -77,8 +78,8 @@ public class DonateController {
     }
 
     @RequestMapping("getById")
-    public Result update(String donateId){
-        if(StringUtils.isEmpty(donateId)){
+    public Result update(String donateId) {
+        if (StringUtils.isEmpty(donateId)) {
             return Result.fail("捐赠id不能为空");
         }
         Donate donate = donateMapper.selectById(Long.parseLong(donateId));
@@ -86,16 +87,16 @@ public class DonateController {
     }
 
     @RequestMapping("delById")
-    public Result delById(String id){
-        if(StringUtils.isEmpty(id)){
+    public Result delById(String id) {
+        if (StringUtils.isEmpty(id)) {
             return Result.fail("删除id不能为空");
         }
-       if(id.contains(",")){
-           List<String> ids = Arrays.asList(id.split(","));
-           donateMapper.deleteBatchIds(ids);
-       }else {
-           donateMapper.deleteById(Long.parseLong(id));
-       }
+        if (id.contains(",")) {
+            List<String> ids = Arrays.asList(id.split(","));
+            donateMapper.deleteBatchIds(ids);
+        } else {
+            donateMapper.deleteById(Long.parseLong(id));
+        }
         return Result.ok();
     }
 }

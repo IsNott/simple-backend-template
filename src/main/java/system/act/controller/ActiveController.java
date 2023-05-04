@@ -71,8 +71,9 @@ public class ActiveController {
     }
 
     @RequestMapping("list")
-    public Result list(){
+    public Result list(String status){
         LambdaQueryWrapper<Active> wrapper = new LambdaQueryWrapper<Active>();
+        wrapper.eq(Active::getAuditStatus,status);
         List<Active> actives = activeMapper.selectList(wrapper);
         return Result.okData(actives);
     }
